@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dymon Asia Capital - AI Internship</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Lato:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;700;900&display=swap');
+
+        :root {
+            --bg-deep: #0b1120;
+            --bg-gradient-start: #1e293b;
+            --tech-blue: #3b82f6;
+            --tech-cyan: #00d2ff;
+            --tech-purple: #6366f1;
+            --text-white: #ffffff;
+            --text-gray: #94a3b8;
+            --chart-green: #10b981;
+            --chart-red: #ef4444;
+            --logo-main: #ffffff;
+            --logo-accent: #7aa7d8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Noto Sans SC', sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-white);
+        }
+
+        .poster {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-deep) 100%);
+            box-shadow: 0 0 60px rgba(0, 210, 255, 0.15);
+        }
+
+        .chart-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none; overflow: hidden;
+        }
+
+        .noise-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.07;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 1;
+        }
+
+        .glow-orb {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+            animation: pulse-glow 8s infinite alternate;
+        }
+        .orb-1 { top: -100px; right: -80px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(59, 130, 246, 0.35), transparent 70%); }
+        .orb-2 { bottom: 10%; left: -60px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(99, 102, 241, 0.25), transparent 70%); animation-delay: 2s; }
+
+        .tech-ring {
+            position: absolute; top: -150px; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 600px;
+            border: 1px dashed rgba(255, 255, 255, 0.1); border-radius: 50%;
+            animation: rotate-ring 60s linear infinite; z-index: 0;
+        }
+
+        .candles-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; opacity: 0.5; }
+        .candle {
+            position: absolute; width: 4px; bottom: 0; box-shadow: 0 0 12px inherit;
+            animation: float-candle 4s ease-in-out infinite;
+        }
+        .candle::after {
+            content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 1px;
+            background: inherit; height: 180%; top: -40%; opacity: 0.6;
+        }
+
+        .c1 { left: 10%; height: 160px; bottom: 120px; background: var(--chart-green); animation-delay: 0s; }
+        .c2 { left: 22%; height: 100px; bottom: 180px; background: var(--chart-red); animation-delay: 1.5s; }
+        .c3 { left: 35%; height: 200px; bottom: 160px; background: var(--chart-green); animation-delay: 0.5s; }
+        .c4 { left: 55%; height: 80px; bottom: 280px; background: var(--chart-green); animation-delay: 2s; }
+        .c5 { left: 70%; height: 140px; bottom: 260px; background: var(--chart-green); animation-delay: 1s; }
+        .c6 { left: 85%; height: 180px; bottom: 300px; background: var(--chart-green); animation-delay: 2.5s; }
+        .c7 { left: 92%; height: 90px; bottom: 380px; background: var(--chart-red); animation-delay: 0.2s; }
+
+        .trend-line {
+            position: absolute; top: 25%; left: -10%; width: 120%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--tech-cyan), transparent);
+            transform: rotate(-12deg); box-shadow: 0 0 15px var(--tech-cyan); opacity: 0.6;
+        }
+
+        @keyframes pulse-glow { 0% { opacity: 0.3; transform: scale(1); } 100% { opacity: 0.6; transform: scale(1.1); } }
+        @keyframes float-candle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes rotate-ring { from { transform: translateX(-50%) rotate(0deg); } to { transform: translateX(-50%) rotate(360deg); } }
+
+        .content-wrapper { position: relative; z-index: 10; }
+
+        .header-area {
+            padding: 50px 24px 20px 24px;
+            background: linear-gradient(to bottom, rgba(11, 17, 32, 0.8) 0%, transparent 100%);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-text {
+            font-family: 'Times New Roman', 'Noto Serif', Georgia, serif;
+            font-size: 1.5rem;
+            color: #fff;
+            letter-spacing: 0.18em;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        .logo-text .cap {
+            font-size: 1.35em;
+            margin-right: -0.02em;
+        }.title-wrapper {
+            display: flex; align-items: center; margin-bottom: 5px; position: relative; overflow: visible;
+        }
+
+        .main-title {
+            font-size: 3.2rem; font-weight: 900; line-height: 1.1; font-style: italic;
+            background: linear-gradient(135deg, #fff 20%, var(--tech-cyan) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.3));
+            z-index: 2; position: relative;
+        }
+
+        .title-chart-bg {
+            position: absolute; right: -20px; top: -10px; width: 220px; height: 100px; z-index: 1; opacity: 0.8;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 100'%3E%3Cpath d='M0,80 L20,70 L40,85 L60,50 L90,60 L120,30 L150,40 L180,10 L220,20 V100 H0 Z' fill='url(%23grad)' opacity='0.3'/%3E%3Cpath d='M0,80 L20,70 L40,85 L60,50 L90,60 L120,30 L150,40 L180,10 L220,20' fill='none' stroke='%2300d2ff' stroke-width='2' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2300d2ff;stop-opacity:0.5' /%3E%3Cstop offset='100%25' style='stop-color:%2300d2ff;stop-opacity:0' /%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: center; transform: skewX(-10deg);
+        }
+
+        .sub-title {
+            font-size: 1rem; color: #93c5fd; font-weight: 400; margin-bottom: 10px;
+            display: inline-block; border-bottom: 2px solid var(--tech-blue); padding-bottom: 4px;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 25px; border-radius: 12px;
+            overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        .company-desc {
+            padding: 24px; font-size: 0.9rem; line-height: 1.6; color: #cbd5e1; text-align: justify;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent);
+        }
+        .company-desc-title {
+            font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: var(--tech-cyan);
+            text-transform: uppercase; letter-spacing: 1px; display: block;
+        }
+
+        .stats-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 24px; }
+        .stat-item { text-align: center; flex: 1; position: relative; }
+        .stat-item:not(:last-child)::after {
+            content: ''; position: absolute; right: 0; top: 10%; height: 80%; width: 1px;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
+        }
+        .stat-num {
+            font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 6px;
+            font-family: 'Lato', sans-serif; text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); white-space: nowrap;
+        }
+        .stat-label { font-size: 0.6rem; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .details-container { padding: 0 24px 40px 24px; }
+
+        .event-card {
+            background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.4);
+            border-radius: 8px; padding: 16px; margin-bottom: 30px;
+            display: flex; align-items: center; box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+            position: relative; overflow: hidden;
+        }
+        .event-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--tech-purple); box-shadow: 0 0 10px var(--tech-purple);
+        }
+        .event-badge {
+            background: var(--tech-purple); color: #fff; font-size: 0.7rem; font-weight: 900;
+            padding: 4px 8px; border-radius: 4px; margin-right: 15px;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.6); animation: pulse-badge 2s infinite;
+        }
+        @keyframes pulse-badge { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
+        .event-info h4 { font-size: 0.85rem; color: #c7d2fe; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .event-info p { font-size: 1.1rem; color: #fff; font-weight: 700; font-family: 'Lato', sans-serif; }
+
+        .section-box { margin-bottom: 30px; }
+        .section-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .section-title {
+            color: #fff; font-size: 1.2rem; font-weight: 700; margin-right: 15px; white-space: nowrap;
+            display: flex; align-items: center;
+        }
+        .section-title::before {
+            content: ''; width: 4px; height: 18px; background: var(--tech-cyan);
+            margin-right: 10px; box-shadow: 0 0 8px var(--tech-cyan);
+        }
+        .section-line { height: 1px; background: linear-gradient(to right, rgba(255,255,255,0.2), transparent); width: 100%; }
+
+        .overview-text {
+            font-size: 0.95rem; line-height: 1.6; color: #e2e8f0;
+            background: rgba(59, 130, 246, 0.1); padding: 15px 20px;
+            border-radius: 6px; border-left: 3px solid var(--tech-blue);
+        }
+        .overview-text strong { color: var(--tech-cyan); }
+
+        .grid-responsibilities { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .resp-item {
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.08); transition: 0.3s;
+        }
+        .resp-item:hover { background: rgba(255,255,255,0.1); border-color: var(--tech-blue); transform: translateY(-2px); }
+        .resp-title { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .resp-desc { font-size: 0.75rem; line-height: 1.4; color: #cbd5e1; }
+
+        .req-list { list-style: none; font-size: 0.9rem; color: #cbd5e1; }
+        .req-list li { margin-bottom: 12px; padding-left: 20px; position: relative; line-height: 1.5; }
+        .req-list li::before { content: '>'; color: var(--tech-cyan); position: absolute; left: 0; font-weight: bold; }
+
+        .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); }
+        .contact-info { font-size: 0.8rem; color: var(--text-gray); }
+        .contact-info a { color: var(--tech-cyan); text-decoration: none; }
+      .qr-display-section {
+            text-align: center;
+            padding: 30px 24px;
+            margin-bottom: 20px;
+        }
+
+        .qr-display-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .qr-display-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            margin-bottom: 20px;
+        }
+
+        .qr-display-container {
+            background: #fff;
+            padding: 16px;
+            border-radius: 12px;
+            display: inline-block;
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.35);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .qr-display-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 50px rgba(0, 210, 255, 0.5);
+        }
+
+        .qr-display-container::before {
+            content: '';
+            position: absolute;
+            top: -3px; left: -3px; right: -3px; bottom: -3px;
+            background: linear-gradient(135deg, var(--tech-cyan), var(--tech-purple), var(--tech-blue));
+            border-radius: 15px;
+            z-index: -1;
+            animation: gradient-rotate 3s ease infinite;
+        }
+
+        @keyframes gradient-rotate { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+
+        #posterQRCode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-scan-hint {
+            margin-top: 16px;
+            font-size: 0.8rem;
+            color: var(--tech-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .qr-scan-hint svg {
+            width: 16px;
+            height: 16px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+        .application-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .application-modal.show { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-content {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 30px 24px;
+            background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-deep) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 60px rgba(0, 210, 255, 0.2);
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            width: 36px; height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: var(--chart-red);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 20%, var(--tech-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-header p {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group label .required {
+            color: var(--chart-red);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: 16px;
+            color: #fff;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--tech-cyan);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.25);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        .form-group select option {
+            background: #1e293b;
+            color: #fff;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }.pdf-upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .pdf-upload-area:hover {
+            border-color: var(--tech-cyan);
+            background: rgba(0, 210, 255, 0.05);
+        }
+
+        .pdf-upload-area.has-file {
+            border-color: var(--chart-green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .pdf-upload-area input[type="file"] { display: none; }
+
+        .upload-icon {
+            width: 48px; height: 48px;
+            margin: 0 auto 12px;
+            fill: var(--text-gray);
+            transition: all 0.3s ease;
+        }
+
+        .pdf-upload-area:hover .upload-icon { fill: var(--tech-cyan); }
+        .pdf-upload-area.has-file .upload-icon { fill: var(--chart-green); }
+
+        .upload-text { font-size: 0.9rem; color: var(--text-gray); margin-bottom: 4px; }
+        .upload-hint { font-size: 0.75rem; color: rgba(255, 255, 255, 0.4); }
+
+        .file-name {
+            font-size: 0.85rem;
+            color: var(--chart-green);
+            margin-top: 8px;
+            display: none;
+            word-break: break-all;
+        }
+
+        .pdf-upload-area.has-file .file-name { display: block; }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, var(--tech-blue), var(--tech-cyan));
+            color: #000;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+        }
+
+        .submit-btn:active { transform: scale(0.98); }
+
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine { 100% { left: 100%; } }
+
+        .success-view {
+            display: none;
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .success-view.show { display: block; }
+
+        .success-icon {
+            width: 80px; height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--chart-green), #34d399);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        .success-icon svg { width: 40px; height: 40px; fill: #fff; }
+
+        .success-title { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .success-message { font-size: 0.9rem; color: var(--text-gray); line-height: 1.6; margin-bottom: 24px; }
+
+        .applicant-summary {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        .summary-title {
+            font-size: 0.85rem;
+            color: var(--tech-cyan);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-item { display: flex; margin-bottom: 10px; font-size: 0.9rem; }
+        .summary-label { color: var(--text-gray); min-width: 80px; }
+        .summary-value { color: #fff; flex: 1; }
+
+        .close-modal-btn {
+            padding: 12px 32px;
+            background: transparent;
+            border: 1px solid var(--tech-cyan);
+            color: var(--tech-cyan);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal-btn:hover {
+            background: rgba(0, 210, 255, 0.15);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+        }
+
+        @media (max-width: 500px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .modal-content { margin: 10px; padding: 24px 16px; }
+        }
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <div class="poster">
+        <div class="chart-bg">
+            <div class="noise-overlay"></div>
+            <div class="tech-ring"></div>
+            <div class="glow-orb orb-1"></div>
+            <div class="glow-orb orb-2"></div>
+            <div class="trend-line"></div>
+            <div class="candles-container">
+                <div class="candle c1"></div>
+                <div class="candle c2"></div>
+                <div class="candle c3"></div>
+                <div class="candle c4"></div>
+                <div class="candle c5"></div>
+                <div class="candle c6"></div>
+                <div class="candle c7"></div>
+            </div>
+        </div><div class="content-wrapper">
+            <div class="header-area">
+                <div class="logo-container">
+                    <div class="logo-text"><span class="cap">D</span>YMON <span class="cap">A</span>SIA</div>
+                </div>
+
+                <div class="title-wrapper">
+                    <h1 class="main-title">AI 实习生</h1>
+                    <div class="title-chart-bg"></div>
+                </div>
+
+                <div class="sub-title">基本面股票团队 (Fundamental Equities)</div>
+            </div>
+
+            <div class="glass-card">
+                <div class="company-desc">
+                    <span class="company-desc-title">关于我们</span>
+                    Dymon Asia Capital 成立于 2008 年，总部位于新加坡，是亚洲领先的另类投资管理公司。我们致力于通过多策略投资组合，为投资者创造长期、稳健的超额回报。
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-num">48亿美元</div>
+                        <div class="stat-label">AUM 资产规模</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num">170+</div>
+                        <div class="stat-label">全球精英人才</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num">Top</div>
+                        <div class="stat-label">亚洲头部基金</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-container">
+                <div class="event-card">
+                    <div class="event-badge">LIVE</div>
+                    <div class="event-info">
+                        <h4>人才招聘会 Recruitment Session</h4>
+                        <p>2月24日 (周一) 19:00 - 21:00</p>
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <div class="section-header">
+                        <div class="section-title">实习概览</div>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="overview-text">
+                        Dymon Asia 基本面股票团队诚聘 AI 实习生。项目为期 <strong>6个月</strong>（2026年6月下旬起），前3个月于新加坡、香港或上海实地工作。实习生将利用 AI 技术赋能投资研究，表现优异者将有机会获得 <strong>全职留用</strong>。
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <div class="section-header">
+                        <div class="section-title">主要职责</div>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="grid-responsibilities">
+                        <div class="resp-item">
+                            <div class="resp-title">AI 工具实施</div>
+                            <div class="resp-desc">评估、测试并实施AI工具，支持股票研究流程。</div>
+                        </div>
+                        <div class="resp-item">
+                            <div class="resp-title">原型开发</div>
+                            <div class="resp-desc">构建轻量级原型，在实际业务流中测试AI应用。</div>
+                        </div>
+                        <div class="resp-item">
+                            <div class="resp-title">分析与报告</div>
+                            <div class="resp-desc">分析工具性能与收益，编写可操作的分析报告。</div>
+                        </div>
+                        <div class="resp-item">
+                            <div class="resp-title">前沿协作</div>
+                            <div class="resp-desc">紧跟生成式AI技术发展，解决真实对冲基金挑战。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <div class="section-header">
+                        <div class="section-title">任职要求</div>
+                        <div class="section-line"></div>
+                    </div>
+                    <ul class="req-list">
+                        <li>定量领域（CS、数据科学、金融等）硕士/博士在读，或优秀大三/大四本科生。</li>
+                        <li>对生成式AI在投资领域的应用有浓厚兴趣，且有相关工具使用经验。</li>
+                        <li>精通至少一门编程语言（Python、SQL、Java）。</li>
+                        <li>具备财务报表分析基础，英语流利（掌握普通话优先）。</li>
+                        <li>独立性强，能保证6个月全职实习。</li>
+                    </ul>
+                </div>
+
+                <div class="qr-display-section">
+                    <div class="qr-display-title">扫码申请</div>
+                    <div class="qr-display-subtitle">扫描二维码填写申请表</div>
+                    <div class="qr-display-container" id="qrTrigger">
+                        <div id="posterQRCode"></div>
+                    </div>
+                    <div class="qr-scan-hint">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                        </svg>
+                        扫码填写申请表单
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div class="contact-info">了解更多：dymonasia.com</div>
+                </div>
+            </div>
+        </div>
+    </div><div class="application-modal" id="applicationModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <div class="modal-header">
+                <h2>AI 实习生申请</h2>
+                <p>Dymon Asia Capital - 基本面股票团队</p>
+            </div>
+            <form id="applicationForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>姓名 <span class="required">*</span></label>
+                        <input type="text" id="name" placeholder="请输入您的姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <label>邮箱 <span class="required">*</span></label>
+                        <input type="email" id="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>手机号码</label>
+                        <input type="tel" id="phone" placeholder="+86 xxx xxxx xxxx">
+                    </div>
+                    <div class="form-group">
+                        <label>学校 <span class="required">*</span></label>
+                        <input type="text" id="school" placeholder="请输入您的学校" required>
+                    </div>
+                    <div class="form-group">
+                        <label>专业 <span class="required">*</span></label>
+                        <input type="text" id="major" placeholder="计算机科学/金融等" required>
+                    </div>
+                    <div class="form-group">
+                        <label>学历</label>
+                        <select id="degree">
+                            <option value="本科在读">本科在读</option>
+                            <option value="硕士在读" selected>硕士在读</option>
+                            <option value="博士在读">博士在读</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>年级</label>
+                        <select id="year">
+                            <option value="大三">大三</option>
+                            <option value="大四">大四</option>
+                            <option value="研一" selected>研一</option>
+                            <option value="研二">研二</option>
+                            <option value="博一">博一</option>
+                            <option value="博二">博二</option>
+                            <option value="博三及以上">博三及以上</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>意向工作地点</label>
+                        <select id="location">
+                            <option value="新加坡">新加坡</option>
+                            <option value="香港">香港</option>
+                            <option value="上海">上海</option>
+                            <option value="均可">均可</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>技能与经验</label>
+                        <textarea id="skills" placeholder="Python/SQL/AI工具经验等"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>上传简历 (PDF) <span class="required">*</span></label>
+                        <div class="pdf-upload-area" id="pdfUploadArea">
+                            <input type="file" id="resumePdf" accept=".pdf" required>
+                            <svg class="upload-icon" viewBox="0 0 24 24">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h6v6h6v10H6z"/>
+                                <path d="M12 12l-4 4h2.5v4h3v-4H16l-4-4z"/>
+                            </svg>
+                            <div class="upload-text">点击上传或拖拽PDF文件</div>
+                            <div class="upload-hint">仅支持 PDF 格式，最大 10MB</div>
+                            <div class="file-name" id="fileName"></div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">提交申请</button>
+            </form>
+            <div class="success-view" id="successView">
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+                <div class="success-title">申请已提交!</div>
+                <div class="success-message">感谢您的申请，我们会尽快审核您的材料。<br>如有问题，将通过邮件与您联系。</div>
+                <div class="applicant-summary">
+                    <div class="summary-title">申请信息摘要</div>
+                    <div id="summaryContent"></div>
+                </div>
+                <button class="close-modal-btn" id="closeSuccessBtn">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const publicUrl = 'https://janicewcyy-hub.github.io/dymon-apply/#apply';
+            new QRCode(document.getElementById('posterQRCode'), {
+                text: publicUrl, width: 160, height: 160,
+                colorDark: '#0b1120', colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+            if (window.location.hash === '#apply') openModal();
+        });
+
+        document.getElementById('qrTrigger').addEventListener('click', function() { openModal(); });
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        document.getElementById('closeSuccessBtn').addEventListener('click', closeModal);
+        document.getElementById('applicationModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+        function openModal() {
+            document.getElementById('applicationModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('applicationModal').classList.remove('show');
+            document.body.style.overflow = '';
+            document.getElementById('applicationForm').style.display = 'block';
+            document.getElementById('successView').classList.remove('show');
+            document.getElementById('applicationForm').reset();
+            document.getElementById('pdfUploadArea').classList.remove('has-file');
+            document.getElementById('fileName').textContent = '';
+            history.pushState('', document.title, window.location.pathname + window.location.search);
+        }
+
+        const pdfUploadArea = document.getElementById('pdfUploadArea');
+        const resumePdfInput = document.getElementById('resumePdf');
+        const fileNameDisplay = document.getElementById('fileName');
+        let uploadedFile = null;
+
+        pdfUploadArea.addEventListener('click', function() { resumePdfInput.click(); });
+        pdfUploadArea.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = 'var(--tech-cyan)'; });
+        pdfUploadArea.addEventListener('dragleave', function(e) { e.preventDefault(); this.style.borderColor = ''; });
+        pdfUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault(); this.style.borderColor = '';
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'application/pdf') handleFileSelect(files[0]);
+            else showCustomAlert('请上传 PDF 格式的文件');
+        });
+        resumePdfInput.addEventListener('change', function() { if (this.files.length > 0) handleFileSelect(this.files[0]); });
+
+        function handleFileSelect(file) {
+            if (file.size > 10 * 1024 * 1024) { showCustomAlert('文件大小不能超过 10MB'); return; }
+            uploadedFile = file;
+            pdfUploadArea.classList.add('has-file');
+            fileNameDisplay.textContent = '✓ ' + file.name;
+        }
+
+        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                school: document.getElementById('school').value.trim(),
+                major: document.getElementById('major').value.trim(),
+                degree: document.getElementById('degree').value,
+                year: document.getElementById('year').value,
+                location: document.getElementById('location').value,
+                skills: document.getElementById('skills').value.trim(),
+                resume: uploadedFile ? uploadedFile.name : ''
+            };
+            if (!formData.name || !formData.email || !formData.school || !formData.major) { showCustomAlert('请填写所有必填字段（标有 * 的字段）'); return; }
+            if (!uploadedFile) { showCustomAlert('请上传您的简历 (PDF)'); return; }
+            sendEmailWithFormData(formData);
+        });
+
+        function sendEmailWithFormData(data) {
+            const subject = encodeURIComponent('AI Internship Application - ' + data.name);
+            const body = encodeURIComponent('【Dymon Asia AI 实习生申请】\n\n姓名: ' + data.name + '\n邮箱: ' + data.email + '\n电话: ' + (data.phone || '未填写') + '\n学校: ' + data.school + '\n专业: ' + data.major + '\n学历: ' + data.degree + '\n年级: ' + data.year + '\n意向工作地点: ' + data.location + '\n技能与经验: ' + (data.skills || '未填写') + '\n\n简历文件: ' + data.resume + '\n\n---\n请在发送此邮件时附上您的简历 PDF 文件。');
+            window.location.href = 'mailto:careers.internship@dymonasia.com?subject=' + subject + '&body=' + body;
+            showSuccessView(data);
+        }
+
+        function showSuccessView(data) {
+            document.getElementById('applicationForm').style.display = 'none';
+            document.getElementById('successView').classList.add('show');
+            document.getElementById('summaryContent').innerHTML = '<div class="summary-item"><span class="summary-label">姓名:</span><span class="summary-value">' + data.name + '</span></div><div class="summary-item"><span class="summary-label">邮箱:</span><span class="summary-value">' + data.email + '</span></div><div class="summary-item"><span class="summary-label">学校:</span><span class="summary-value">' + data.school + '</span></div><div class="summary-item"><span class="summary-label">专业:</span><span class="summary-value">' + data.major + '</span></div><div class="summary-item"><span class="summary-label">学历:</span><span class="summary-value">' + data.degree + ' - ' + data.year + '</span></div><div class="summary-item"><span class="summary-label">地点:</span><span class="summary-value">' + data.location + '</span></div><div class="summary-item"><span class="summary-label">简历:</span><span class="summary-value">' + data.resume + '</span></div>';
+        }
+
+        function showCustomAlert(message) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:99999;';
+            modal.innerHTML = '<div style="background:linear-gradient(135deg,#1e293b,#0b1120);padding:28px 36px;border-radius:12px;border:1px solid rgba(59,130,246,0.3);box-shadow:0 0 50px rgba(0,210,255,0.25);max-width:320px;text-align:center;"><p style="color:#fff;font-size:0.95rem;margin-bottom:24px;line-height:1.6;">' + message + '</p><button onclick="this.closest(\'div\').parentElement.remove()" style="background:linear-gradient(90deg,#3b82f6,#00d2ff);color:#000;border:none;padding:12px 32px;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.9rem;">确定</button></div>';
+            document.body.appendChild(modal);
+            modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
+        }
+
+        window.addEventListener('hashchange', function() { if (window.location.hash === '#apply') openModal(); });
+    </script>
+</body>
+</html>
