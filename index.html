@@ -5,135 +5,728 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dymon Asia Capital - AI 线上人才招聘会</title>
     <style>
+        /* 引入字体 */
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Lato:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;700;900&display=swap');
+
         :root {
-            --bg-deep: #0b1120; --bg-gradient-start: #1e293b; --tech-blue: #3b82f6;
-            --tech-cyan: #00d2ff; --tech-purple: #6366f1; --text-white: #ffffff;
-            --text-gray: #94a3b8; --chart-green: #10b981; --chart-red: #ef4444;
+            --bg-deep: #0b1120;
+            --bg-gradient-start: #1e293b;
+            --tech-blue: #3b82f6;
+            --tech-cyan: #00d2ff;
+            --tech-purple: #6366f1;
+            --text-white: #ffffff;
+            --text-gray: #94a3b8;
+            --chart-green: #10b981;
+            --chart-red: #ef4444;
+            --logo-main: #ffffff;
+            --logo-accent: #7aa7d8;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #1a1a1a; font-family: 'Noto Sans SC', sans-serif; display: flex; justify-content: center; min-height: 100vh; color: var(--text-white); }
-        .poster { width: 100%; max-width: 480px; position: relative; overflow: hidden; background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-deep) 100%); box-shadow: 0 0 60px rgba(0, 210, 255, 0.15); }
-        .chart-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden; }
-        .noise-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.07; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); z-index: 1; }
-        .glow-orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: pulse-glow 8s infinite alternate; }
+
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Noto Sans SC', sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-white);
+        }
+
+        .poster {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            overflow: hidden;
+            /* 顶部纯白，让logo完美融合 */
+            background: linear-gradient(180deg,
+                #ffffff 0%,
+                #ffffff 10%,
+                #f8fafc 14%,
+                #e2e8f0 18%,
+                #94a3b8 25%,
+                #475569 35%,
+                #1e293b 50%,
+                var(--bg-deep) 100%);
+            box-shadow: 0 0 60px rgba(0, 210, 255, 0.15);
+        }
+
+        /* 背景特效层 */
+        .chart-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none; overflow: hidden;
+        }
+
+        .noise-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.07;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 1;
+        }
+
+        .glow-orb {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+            animation: pulse-glow 8s infinite alternate;
+        }
         .orb-1 { top: -100px; right: -80px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(59, 130, 246, 0.35), transparent 70%); }
         .orb-2 { bottom: 10%; left: -60px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(99, 102, 241, 0.25), transparent 70%); animation-delay: 2s; }
-        .tech-ring { position: absolute; top: -150px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; border: 1px dashed rgba(255, 255, 255, 0.1); border-radius: 50%; animation: rotate-ring 60s linear infinite; z-index: 0; }
+
+        .tech-ring {
+            position: absolute; top: -150px; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 600px;
+            border: 1px dashed rgba(255, 255, 255, 0.1); border-radius: 50%;
+            animation: rotate-ring 60s linear infinite; z-index: 0;
+        }
+
         .candles-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; opacity: 0.5; }
-        .candle { position: absolute; width: 4px; bottom: 0; box-shadow: 0 0 12px inherit; animation: float-candle 4s ease-in-out infinite; }
-        .candle::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 1px; background: inherit; height: 180%; top: -40%; opacity: 0.6; }
-        .c1 { left: 10%; height: 160px; bottom: 120px; background: var(--chart-green); }
+        .candle {
+            position: absolute; width: 4px; bottom: 0; box-shadow: 0 0 12px inherit;
+            animation: float-candle 4s ease-in-out infinite;
+        }
+        .candle::after {
+            content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 1px;
+            background: inherit; height: 180%; top: -40%; opacity: 0.6;
+        }
+
+        .c1 { left: 10%; height: 160px; bottom: 120px; background: var(--chart-green); animation-delay: 0s; }
         .c2 { left: 22%; height: 100px; bottom: 180px; background: var(--chart-red); animation-delay: 1.5s; }
         .c3 { left: 35%; height: 200px; bottom: 160px; background: var(--chart-green); animation-delay: 0.5s; }
         .c4 { left: 55%; height: 80px; bottom: 280px; background: var(--chart-green); animation-delay: 2s; }
         .c5 { left: 70%; height: 140px; bottom: 260px; background: var(--chart-green); animation-delay: 1s; }
         .c6 { left: 85%; height: 180px; bottom: 300px; background: var(--chart-green); animation-delay: 2.5s; }
         .c7 { left: 92%; height: 90px; bottom: 380px; background: var(--chart-red); animation-delay: 0.2s; }
-        .trend-line { position: absolute; top: 25%; left: -10%; width: 120%; height: 2px; background: linear-gradient(90deg, transparent, var(--tech-cyan), transparent); transform: rotate(-12deg); box-shadow: 0 0 15px var(--tech-cyan); opacity: 0.6; }
+
+        .trend-line {
+            position: absolute; top: 25%; left: -10%; width: 120%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--tech-cyan), transparent);
+            transform: rotate(-12deg); box-shadow: 0 0 15px var(--tech-cyan); opacity: 0.6;
+        }
+
         @keyframes pulse-glow { 0% { opacity: 0.3; transform: scale(1); } 100% { opacity: 0.6; transform: scale(1.1); } }
         @keyframes float-candle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         @keyframes rotate-ring { from { transform: translateX(-50%) rotate(0deg); } to { transform: translateX(-50%) rotate(360deg); } }
+
         .content-wrapper { position: relative; z-index: 10; }
-        .header-area { padding: 50px 24px 20px 24px; background: linear-gradient(to bottom, rgba(11, 17, 32, 0.8) 0%, transparent 100%); }
-        .logo-container { display: flex; align-items: center; margin-bottom: 25px; }
-        .logo-text { font-family: 'Times New Roman', 'Noto Serif', Georgia, serif; font-size: 1.5rem; color: #fff; letter-spacing: 0.18em; font-weight: 400; line-height: 1; }
-        .logo-text .cap { font-size: 1.35em; margin-right: -0.02em; }
-        .title-wrapper { display: flex; align-items: center; margin-bottom: 5px; position: relative; overflow: visible; }
-        .main-title { font-size: 2.4rem; font-weight: 900; line-height: 1.1; font-style: italic; background: linear-gradient(135deg, #fff 20%, var(--tech-cyan) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.3)); z-index: 2; position: relative; }
-        .title-chart-bg { position: absolute; right: -20px; top: -10px; width: 220px; height: 100px; z-index: 1; opacity: 0.8; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 100'%3E%3Cpath d='M0,80 L20,70 L40,85 L60,50 L90,60 L120,30 L150,40 L180,10 L220,20 V100 H0 Z' fill='url(%23grad)' opacity='0.3'/%3E%3Cpath d='M0,80 L20,70 L40,85 L60,50 L90,60 L120,30 L150,40 L180,10 L220,20' fill='none' stroke='%2300d2ff' stroke-width='2' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2300d2ff;stop-opacity:0.5' /%3E%3Cstop offset='100%25' style='stop-color:%2300d2ff;stop-opacity:0' /%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; transform: skewX(-10deg); }
-        .sub-title { font-size: 1rem; color: #93c5fd; font-weight: 400; margin-bottom: 10px; display: inline-block; border-bottom: 2px solid var(--tech-blue); padding-bottom: 4px; }
-        .glass-card { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-top: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); margin-bottom: 25px; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
-        .company-desc { padding: 24px; font-size: 0.9rem; line-height: 1.6; color: #cbd5e1; text-align: justify; border-bottom: 1px solid rgba(255,255,255,0.08); background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent); }
-        .company-desc-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: var(--tech-cyan); text-transform: uppercase; letter-spacing: 1px; display: block; }
-        .stats-row { display: flex; justify-content: space-around; align-items: flex-start; padding: 24px; }
+
+        /* Header */
+        .header-area {
+            padding: 50px 24px 20px 24px;
+            /* 移除深色覆盖，让浅色背景显示 */
+            background: transparent;
+        }
+
+        /* Logo 核心修改区域 */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-image {
+            height: 55px;
+            width: auto;
+            /* 透明背景，让logo自然融合在浅色区域 */
+        }
+
+        .title-wrapper {
+            display: flex; align-items: center; margin-bottom: 5px; position: relative; overflow: visible;
+        }
+
+        .main-title {
+            font-size: 2.4rem; font-weight: 900; line-height: 1.1; font-style: italic;
+            /* 深蓝色渐变，适合浅色背景 */
+            background: linear-gradient(135deg, #1a365d 20%, #2563eb 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            z-index: 2; position: relative;
+        }
+
+        .title-chart-bg {
+            position: absolute; right: -20px; top: -10px; width: 220px; height: 100px; z-index: 1; opacity: 0.8;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 100'%3E%3Cpath d='M0,80 L20,70 L40,85 L60,50 L90,60 L120,30 L150,40 L180,10 L220,20 V100 H0 Z' fill='url(%23grad)' opacity='0.3'/%3E%3Cpath d='M0,80 L20,70 L40,85 L60,50 L90,60 L120,30 L150,40 L180,10 L220,20' fill='none' stroke='%2300d2ff' stroke-width='2' stroke-linecap='round'/%3E%3Crect x='35' y='45' width='6' height='40' fill='%2310b981' opacity='0.7'/%3E%3Crect x='55' y='40' width='6' height='20' fill='%23ef4444' opacity='0.7'/%3E%3Crect x='85' y='50' width='6' height='25' fill='%2310b981' opacity='0.7'/%3E%3Crect x='115' y='20' width='6' height='35' fill='%2310b981' opacity='0.7'/%3E%3Crect x='145' y='30' width='6' height='15' fill='%23ef4444' opacity='0.7'/%3E%3Crect x='175' y='5' width='6' height='45' fill='%2310b981' opacity='0.7'/%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2300d2ff;stop-opacity:0.5' /%3E%3Cstop offset='100%25' style='stop-color:%2300d2ff;stop-opacity:0' /%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: center; transform: skewX(-10deg);
+        }
+
+        .sub-title {
+            font-size: 1rem; color: #1e40af; font-weight: 500; margin-bottom: 10px;
+            display: inline-block; border-bottom: 2px solid #3b82f6; padding-bottom: 4px;
+        }
+
+        /* 关注亚洲 - 放大版 */
+        .focus-asia {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--tech-cyan);
+            margin: 15px 0;
+            text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+            letter-spacing: 0.1em;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 25px; border-radius: 12px;
+            overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        .company-desc {
+            padding: 24px; font-size: 0.9rem; line-height: 1.6; color: #cbd5e1; text-align: justify;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent);
+        }
+        .company-desc-title {
+            font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: var(--tech-cyan);
+            text-transform: uppercase; letter-spacing: 1px; display: block;
+        }
+
+        .stats-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 24px; }
         .stat-item { text-align: center; flex: 1; position: relative; }
-        .stat-item:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 10%; height: 80%; width: 1px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent); }
-        .stat-num { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 6px; font-family: 'Lato', sans-serif; text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); white-space: nowrap; }
+        .stat-item:not(:last-child)::after {
+            content: ''; position: absolute; right: 0; top: 10%; height: 80%; width: 1px;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
+        }
+        .stat-num {
+            font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 6px;
+            font-family: 'Lato', sans-serif; text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); white-space: nowrap;
+        }
         .stat-label { font-size: 0.6rem; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.5px; }
+
         .details-container { padding: 0 24px 40px 24px; }
-        .event-card { background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.4); border-radius: 8px; padding: 16px; margin-bottom: 30px; display: flex; align-items: flex-start; box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); position: relative; overflow: hidden; }
-        .event-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--tech-purple); box-shadow: 0 0 10px var(--tech-purple); }
-        .event-badge { background: var(--tech-purple); color: #fff; font-size: 0.7rem; font-weight: 900; padding: 4px 8px; border-radius: 4px; margin-right: 15px; box-shadow: 0 0 10px rgba(99, 102, 241, 0.6); animation: pulse-badge 2s infinite; }
+
+        .event-card {
+            background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.4);
+            border-radius: 8px; padding: 16px; margin-bottom: 30px;
+            display: flex; align-items: center; box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+            position: relative; overflow: hidden;
+        }
+        .event-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--tech-purple); box-shadow: 0 0 10px var(--tech-purple);
+        }
+        .event-badge {
+            background: var(--tech-purple); color: #fff; font-size: 0.7rem; font-weight: 900;
+            padding: 4px 8px; border-radius: 4px; margin-right: 15px;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.6); animation: pulse-badge 2s infinite;
+        }
         @keyframes pulse-badge { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
         .event-info h4 { font-size: 0.85rem; color: #c7d2fe; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .event-info p { font-size: 1.1rem; color: #fff; font-weight: 700; font-family: 'Lato', sans-serif; }
         .event-info .event-desc { font-size: 0.85rem; color: #cbd5e1; font-weight: 400; margin-top: 10px; line-height: 1.6; }
+
         .section-box { margin-bottom: 30px; }
         .section-header { display: flex; align-items: center; margin-bottom: 15px; }
-        .section-title { color: #fff; font-size: 1.2rem; font-weight: 700; margin-right: 15px; white-space: nowrap; display: flex; align-items: center; }
-        .section-title::before { content: ''; width: 4px; height: 18px; background: var(--tech-cyan); margin-right: 10px; box-shadow: 0 0 8px var(--tech-cyan); }
+        .section-title {
+            color: #fff; font-size: 1.2rem; font-weight: 700; margin-right: 15px; white-space: nowrap;
+            display: flex; align-items: center;
+        }
+        .section-title::before {
+            content: ''; width: 4px; height: 18px; background: var(--tech-cyan);
+            margin-right: 10px; box-shadow: 0 0 8px var(--tech-cyan);
+        }
         .section-line { height: 1px; background: linear-gradient(to right, rgba(255,255,255,0.2), transparent); width: 100%; }
-        .overview-text { font-size: 0.95rem; line-height: 1.6; color: #e2e8f0; background: rgba(59, 130, 246, 0.1); padding: 15px 20px; border-radius: 6px; border-left: 3px solid var(--tech-blue); }
+
+        .overview-text {
+            font-size: 0.95rem; line-height: 1.6; color: #e2e8f0;
+            background: rgba(59, 130, 246, 0.1); padding: 15px 20px;
+            border-radius: 6px; border-left: 3px solid var(--tech-blue);
+        }
         .overview-text strong { color: var(--tech-cyan); }
+
+        /* 招聘会概括 */
+        .session-overview {
+            font-size: 0.9rem; line-height: 1.7; color: #cbd5e1;
+            background: rgba(99, 102, 241, 0.1); padding: 18px 20px;
+            border-radius: 8px; border-left: 3px solid var(--tech-purple);
+            margin-bottom: 25px;
+        }
+
         .grid-responsibilities { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .resp-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); transition: 0.3s; }
+        .resp-item {
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.08); transition: 0.3s;
+        }
         .resp-item:hover { background: rgba(255,255,255,0.1); border-color: var(--tech-blue); transform: translateY(-2px); }
         .resp-title { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
         .resp-desc { font-size: 0.75rem; line-height: 1.4; color: #cbd5e1; }
+
         .req-list { list-style: none; font-size: 0.9rem; color: #cbd5e1; }
         .req-list li { margin-bottom: 12px; padding-left: 20px; position: relative; line-height: 1.5; }
         .req-list li::before { content: '>'; color: var(--tech-cyan); position: absolute; left: 0; font-weight: bold; }
+
         .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); }
+
         .contact-info { font-size: 0.8rem; color: var(--text-gray); }
-        .qr-dual-section { display: flex; justify-content: center; gap: 30px; padding: 30px 24px; margin-bottom: 20px; }
-        .qr-item { text-align: center; flex: 1; max-width: 180px; }
-        .qr-display-title { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
-        .qr-display-container { background: #fff; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 0 30px rgba(0, 210, 255, 0.35); position: relative; cursor: pointer; transition: all 0.3s ease; }
-        .qr-display-container:hover { transform: scale(1.02); box-shadow: 0 0 40px rgba(0, 210, 255, 0.5); }
-        .qr-display-container::before { content: ''; position: absolute; top: -3px; left: -3px; right: -3px; bottom: -3px; background: linear-gradient(135deg, var(--tech-cyan), var(--tech-purple), var(--tech-blue)); border-radius: 15px; z-index: -1; animation: gradient-rotate 3s ease infinite; }
-        .qr-placeholder { width: 130px; height: 130px; background: rgba(255, 255, 255, 0.1); border: 2px dashed rgba(255, 255, 255, 0.3); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
-        .placeholder-text { font-size: 0.75rem; color: var(--text-gray); text-align: center; line-height: 1.4; }
-        @keyframes gradient-rotate { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
-        #posterQRCode { display: flex; justify-content: center; align-items: center; }
-        .qr-scan-hint { margin-top: 12px; font-size: 0.75rem; color: var(--tech-cyan); }
+        .contact-info a { color: var(--tech-cyan); text-decoration: none; }
+
+        /* QR Code 双排展示区域 */
+        .qr-dual-section {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 24px;
+            margin-bottom: 20px;
+        }
+
+        .qr-item {
+            text-align: center;
+            flex: 1;
+            max-width: 180px;
+        }
+
+        .qr-display-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .qr-display-container {
+            background: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            display: inline-block;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.35);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .qr-display-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.5);
+        }
+
+        .qr-display-container::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(135deg, var(--tech-cyan), var(--tech-purple), var(--tech-blue));
+            border-radius: 15px;
+            z-index: -1;
+            animation: gradient-rotate 3s ease infinite;
+        }
+
+        .qr-placeholder {
+            width: 130px;
+            height: 130px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .placeholder-text {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        @keyframes gradient-rotate {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        #posterQRCode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-scan-hint {
+            margin-top: 12px;
+            font-size: 0.75rem;
+            color: var(--tech-cyan);
+        }
+
         /* 申请表单弹窗 */
-        .application-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10000; overflow-y: auto; animation: fadeIn 0.3s ease; }
-        .application-modal.show { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .modal-content { max-width: 500px; margin: 20px auto; padding: 30px 24px; background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-deep) 100%); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 0 60px rgba(0, 210, 255, 0.2); position: relative; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .modal-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%; color: #fff; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
-        .modal-close:hover { background: rgba(239, 68, 68, 0.3); border-color: var(--chart-red); }
-        .modal-header { text-align: center; margin-bottom: 30px; }
-        .modal-header h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 8px; background: linear-gradient(135deg, #fff 20%, var(--tech-cyan) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .modal-header p { font-size: 0.9rem; color: var(--text-gray); }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .form-group { display: flex; flex-direction: column; }
-        .form-group.full-width { grid-column: 1 / -1; }
-        .form-group label { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-group label .required { color: var(--chart-red); }
-        .form-group input, .form-group select { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 14px 16px; font-size: 16px; color: #fff; font-family: inherit; transition: all 0.3s ease; }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--tech-cyan); box-shadow: 0 0 15px rgba(0, 210, 255, 0.25); background: rgba(255, 255, 255, 0.12); }
-        .form-group input::placeholder { color: rgba(255, 255, 255, 0.35); }
-        .form-group select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; }
-        .form-group select option { background: #1e293b; color: #fff; }
-        .submit-btn { display: block; width: 100%; padding: 16px; background: linear-gradient(90deg, var(--tech-blue), var(--tech-cyan)); color: #000; font-weight: 700; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; position: relative; overflow: hidden; }
-        .submit-btn:hover { filter: brightness(1.1); box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
-        .submit-btn:active { transform: scale(0.98); }
-        .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-        .submit-btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shine 3s infinite; }
+        .application-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .application-modal.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 30px 24px;
+            background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-deep) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 60px rgba(0, 210, 255, 0.2);
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: var(--chart-red);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 20%, var(--tech-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-header p {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group label .required {
+            color: var(--chart-red);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: 16px;
+            color: #fff;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--tech-cyan);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.25);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        .form-group select option {
+            background: #1e293b;
+            color: #fff;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        /* PDF 上传区域 */
+        .pdf-upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .pdf-upload-area:hover {
+            border-color: var(--tech-cyan);
+            background: rgba(0, 210, 255, 0.05);
+        }
+
+        .pdf-upload-area.has-file {
+            border-color: var(--chart-green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .pdf-upload-area input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            fill: var(--text-gray);
+            transition: all 0.3s ease;
+        }
+
+        .pdf-upload-area:hover .upload-icon {
+            fill: var(--tech-cyan);
+        }
+
+        .pdf-upload-area.has-file .upload-icon {
+            fill: var(--chart-green);
+        }
+
+        .upload-text {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 4px;
+        }
+
+        .upload-hint {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .file-name {
+            font-size: 0.85rem;
+            color: var(--chart-green);
+            margin-top: 8px;
+            display: none;
+            word-break: break-all;
+        }
+
+        .pdf-upload-area.has-file .file-name {
+            display: block;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, var(--tech-blue), var(--tech-cyan));
+            color: #000;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 3s infinite;
+        }
+
         @keyframes shine { 100% { left: 100%; } }
-        .success-view { display: none; text-align: center; padding: 30px 0; }
-        .success-view.show { display: block; }
-        .success-icon { width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, var(--chart-green), #34d399); border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: scaleIn 0.5s ease; }
-        @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
-        .success-icon svg { width: 40px; height: 40px; fill: #fff; }
-        .success-title { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
-        .success-message { font-size: 0.9rem; color: var(--text-gray); line-height: 1.6; margin-bottom: 24px; }
-        .applicant-summary { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 20px; text-align: left; margin-bottom: 24px; }
-        .summary-title { font-size: 0.85rem; color: var(--tech-cyan); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .summary-item { display: flex; margin-bottom: 10px; font-size: 0.9rem; }
-        .summary-label { color: var(--text-gray); min-width: 80px; }
-        .summary-value { color: #fff; flex: 1; }
-        .close-modal-btn { padding: 12px 32px; background: transparent; border: 1px solid var(--tech-cyan); color: var(--tech-cyan); font-size: 0.9rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; }
-        .close-modal-btn:hover { background: rgba(0, 210, 255, 0.15); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
-        @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } .modal-content { margin: 10px; padding: 24px 16px; } }
+
+        /* 成功提交后的显示 */
+        .success-view {
+            display: none;
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .success-view.show {
+            display: block;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--chart-green), #34d399);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: #fff;
+        }
+
+        .success-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .applicant-summary {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        .summary-title {
+            font-size: 0.85rem;
+            color: var(--tech-cyan);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-item {
+            display: flex;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .summary-label {
+            color: var(--text-gray);
+            min-width: 80px;
+        }
+
+        .summary-value {
+            color: #fff;
+            flex: 1;
+        }
+
+        .close-modal-btn {
+            padding: 12px 32px;
+            background: transparent;
+            border: 1px solid var(--tech-cyan);
+            color: var(--tech-cyan);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal-btn:hover {
+            background: rgba(0, 210, 255, 0.15);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 500px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 10px;
+                padding: 24px 16px;
+            }
+        }
+
     </style>
+    <!-- QR Code 生成库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
+
     <div class="poster">
+        <!-- 背景层 -->
         <div class="chart-bg">
             <div class="noise-overlay"></div>
             <div class="tech-ring"></div>
@@ -141,21 +734,35 @@
             <div class="glow-orb orb-2"></div>
             <div class="trend-line"></div>
             <div class="candles-container">
-                <div class="candle c1"></div><div class="candle c2"></div><div class="candle c3"></div>
-                <div class="candle c4"></div><div class="candle c5"></div><div class="candle c6"></div><div class="candle c7"></div>
+                <div class="candle c1"></div>
+                <div class="candle c2"></div>
+                <div class="candle c3"></div>
+                <div class="candle c4"></div>
+                <div class="candle c5"></div>
+                <div class="candle c6"></div>
+                <div class="candle c7"></div>
             </div>
         </div>
+
         <div class="content-wrapper">
+            <!-- Header -->
             <div class="header-area">
+
+                <!-- Logo 区域 - 使用图片（白底融合） -->
                 <div class="logo-container">
-                    <div class="logo-text"><span class="cap">D</span>YMON <span class="cap">A</span>SIA</div>
+                    <img src="https://pfst.cf2.poecdn.net/base/image/411102607f77dee72e3c3fb88232d509a8ed03b21cf0f78edd331d35cd3a4814?w=388&h=94" alt="Dymon Asia" class="logo-image">
                 </div>
+
+                <!-- 标题区域 -->
                 <div class="title-wrapper">
                     <h1 class="main-title">AI 实习生</h1>
                     <div class="title-chart-bg"></div>
                 </div>
+
                 <div class="sub-title">基本面股票团队 (Fundamental Equities)</div>
             </div>
+
+            <!-- Glass Card -->
             <div class="glass-card">
                 <div class="company-desc">
                     <span class="company-desc-title">关于我们</span>
@@ -170,8 +777,10 @@
                         <div class="stat-num">390+</div>
                         <div class="stat-label">全球精英人才</div>
                     </div>
-                </div>
+                                    </div>
             </div>
+
+            <!-- 详情内容 -->
             <div class="details-container">
                 <div class="event-card">
                     <div class="event-badge">LIVE</div>
@@ -181,6 +790,7 @@
                         <p class="event-desc">本次线上招聘会将针对实习生项目进行详细介绍，包括实习流程与安排。届时将有管理层亲自介绍公司，并设有 Q&A 环节，感兴趣的候选人可以现场提问。</p>
                     </div>
                 </div>
+
                 <div class="section-box">
                     <div class="section-header">
                         <div class="section-title">实习概览</div>
@@ -214,6 +824,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="section-box">
                     <div class="section-header">
                         <div class="section-title">任职要求</div>
@@ -228,7 +839,10 @@
                         <li>独立性强，能保证6个月全职实习。</li>
                     </ul>
                 </div>
+
+                <!-- QR Code 展示区域 - 两个并排 -->
                 <div class="qr-dual-section">
+                    <!-- 左边：线上招聘会报名 -->
                     <div class="qr-item">
                         <div class="qr-display-title">线上招聘会报名</div>
                         <div class="qr-display-container" id="qrTrigger">
@@ -236,6 +850,8 @@
                         </div>
                         <div class="qr-scan-hint">扫码报名</div>
                     </div>
+
+                    <!-- 右边：实习申请（预留空位） -->
                     <div class="qr-item">
                         <div class="qr-display-title">实习申请</div>
                         <div class="qr-placeholder">
@@ -244,34 +860,49 @@
                         <div class="qr-scan-hint">扫码申请实习</div>
                     </div>
                 </div>
+
                 <div class="footer">
-                    <div class="contact-info">了解更多：dymonasia.com</div>
+                    <div class="contact-info">
+                        了解更多：dymonasia.com
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- 申请表单弹窗 -->
     <div class="application-modal" id="applicationModal">
         <div class="modal-content">
             <button class="modal-close" id="closeModal">&times;</button>
+
             <div class="modal-header">
                 <h2>线上招聘会报名</h2>
                 <p>Dymon Asia Capital - AI 实习生招聘会</p>
             </div>
-            <form id="applicationForm">
+
+            <!-- 表单视图 - 使用 FormSubmit 自动发送邮件 -->
+            <form id="applicationForm" action="https://formsubmit.co/janicewcyy@gmail.com" method="POST">
+                <!-- FormSubmit 配置 -->
                 <input type="hidden" name="_subject" value="线上招聘会报名">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+
                 <div class="form-grid">
                     <div class="form-group full-width">
                         <label>姓名 <span class="required">*</span></label>
                         <input type="text" name="姓名" id="name" placeholder="请输入您的姓名" required>
                     </div>
+
                     <div class="form-group full-width">
                         <label>邮箱 <span class="required">*</span></label>
                         <input type="email" name="邮箱" id="email" placeholder="your@email.com" required>
                     </div>
+
                     <div class="form-group full-width">
                         <label>学校 <span class="required">*</span></label>
                         <input type="text" name="学校" id="school" placeholder="请输入您的学校" required>
                     </div>
+
                     <div class="form-group full-width">
                         <label>从什么途径知道的实习项目 <span class="required">*</span></label>
                         <select name="信息来源" id="source" required>
@@ -284,74 +915,224 @@
                         </select>
                     </div>
                 </div>
+
                 <button type="submit" class="submit-btn">提交报名</button>
             </form>
+
+            <!-- 成功视图 -->
             <div class="success-view" id="successView">
                 <div class="success-icon">
-                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
                 </div>
                 <div class="success-title">报名成功!</div>
-                <div class="success-message">感谢您的报名，我们已成功收到您的信息。<br>我们将会以邮件确认招聘会详情。</div>
+                <div class="success-message">
+                    感谢您的报名，我们已成功收到您的信息。<br>
+                    我们将会以邮件确认招聘会详情。
+                </div>
+
                 <div class="applicant-summary">
                     <div class="summary-title">报名信息摘要</div>
                     <div id="summaryContent"></div>
                 </div>
+
                 <button class="close-modal-btn" id="closeSuccessBtn">关闭</button>
             </div>
         </div>
     </div>
+
     <script>
+        // 生成海报上的QR码
         document.addEventListener('DOMContentLoaded', function() {
+            // GitHub Pages 链接 - 扫码后打开报名表单
             const publicUrl = 'https://janicewcyy-hub.github.io/dymon-apply/#apply';
+
             new QRCode(document.getElementById('posterQRCode'), {
-                text: publicUrl, width: 110, height: 110, colorDark: '#0b1120', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M
+                text: publicUrl,
+                width: 110,
+                height: 110,
+                colorDark: '#0b1120',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
             });
-            if (window.location.hash === '#apply') { openModal(); }
+
+            // 检查URL是否有#apply，如果有则自动打开弹窗
+            if (window.location.hash === '#apply') {
+                openModal();
+            }
         });
-        document.getElementById('qrTrigger').addEventListener('click', function() { openModal(); });
+
+        // 点击QR码打开弹窗
+        document.getElementById('qrTrigger').addEventListener('click', function() {
+            openModal();
+        });
+
+        // 关闭弹窗
         document.getElementById('closeModal').addEventListener('click', closeModal);
         document.getElementById('closeSuccessBtn').addEventListener('click', closeModal);
-        document.getElementById('applicationModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-        function openModal() { document.getElementById('applicationModal').classList.add('show'); document.body.style.overflow = 'hidden'; }
+
+        document.getElementById('applicationModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        function openModal() {
+            document.getElementById('applicationModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
         function closeModal() {
-            document.getElementById('applicationModal').classList.remove('show'); document.body.style.overflow = '';
+            document.getElementById('applicationModal').classList.remove('show');
+            document.body.style.overflow = '';
+            // 重置表单和视图
             document.getElementById('applicationForm').style.display = 'block';
             document.getElementById('successView').classList.remove('show');
             document.getElementById('applicationForm').reset();
+            // 移除URL hash
             history.pushState('', document.title, window.location.pathname + window.location.search);
         }
+
+        // 表单提交 - 使用 FormSubmit 自动发送邮件
         document.getElementById('applicationForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const formData = { name: document.getElementById('name').value.trim(), email: document.getElementById('email').value.trim(), school: document.getElementById('school').value.trim(), source: document.getElementById('source').value };
-            if (!formData.name || !formData.email || !formData.school) { showCustomAlert('请填写所有必填字段（标有 * 的字段）'); return; }
-            if (!formData.source) { showCustomAlert('请选择从什么途径知道的实习项目'); return; }
+
+            // 收集表单数据
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                school: document.getElementById('school').value.trim(),
+                source: document.getElementById('source').value
+            };
+
+            // 验证必填字段
+            if (!formData.name || !formData.email || !formData.school) {
+                showCustomAlert('请填写所有必填字段（标有 * 的字段）');
+                return;
+            }
+
+            if (!formData.source) {
+                showCustomAlert('请选择从什么途径知道的实习项目');
+                return;
+            }
+
+            // 发送到 FormSubmit
             submitToFormSubmit(formData);
         });
+
+        // 使用 FormSubmit 发送邮件
         function submitToFormSubmit(data) {
             const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.textContent = '提交中...'; submitBtn.disabled = true;
+            submitBtn.textContent = '提交中...';
+            submitBtn.disabled = true;
+
             fetch('https://formsubmit.co/ajax/janicewcyy@gmail.com', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({ 姓名: data.name, 邮箱: data.email, 学校: data.school, 信息来源: data.source, _subject: '线上招聘会报名 - ' + data.name })
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    姓名: data.name,
+                    邮箱: data.email,
+                    学校: data.school,
+                    信息来源: data.source,
+                    _subject: '线上招聘会报名 - ' + data.name
+                })
             })
             .then(response => response.json())
-            .then(result => { submitBtn.textContent = '提交报名'; submitBtn.disabled = false; showSuccessView(data); })
-            .catch(error => { submitBtn.textContent = '提交报名'; submitBtn.disabled = false; showCustomAlert('提交失败，请稍后重试'); });
+            .then(result => {
+                submitBtn.textContent = '提交报名';
+                submitBtn.disabled = false;
+                showSuccessView(data);
+            })
+            .catch(error => {
+                submitBtn.textContent = '提交报名';
+                submitBtn.disabled = false;
+                showCustomAlert('提交失败，请稍后重试');
+            });
         }
+
         function showSuccessView(data) {
+            // 隐藏表单
             document.getElementById('applicationForm').style.display = 'none';
-            document.getElementById('successView').classList.add('show');
-            document.getElementById('summaryContent').innerHTML = '<div class="summary-item"><span class="summary-label">姓名:</span><span class="summary-value">' + data.name + '</span></div><div class="summary-item"><span class="summary-label">邮箱:</span><span class="summary-value">' + data.email + '</span></div><div class="summary-item"><span class="summary-label">学校:</span><span class="summary-value">' + data.school + '</span></div><div class="summary-item"><span class="summary-label">信息来源:</span><span class="summary-value">' + data.source + '</span></div>';
+
+            // 显示成功视图
+            const successView = document.getElementById('successView');
+            successView.classList.add('show');
+
+            // 填充摘要信息
+            const summaryContent = document.getElementById('summaryContent');
+            summaryContent.innerHTML = `
+                <div class="summary-item">
+                    <span class="summary-label">姓名:</span>
+                    <span class="summary-value">${data.name}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">邮箱:</span>
+                    <span class="summary-value">${data.email}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">学校:</span>
+                    <span class="summary-value">${data.school}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">信息来源:</span>
+                    <span class="summary-value">${data.source}</span>
+                </div>
+            `;
         }
+
+        // 自定义弹窗
         function showCustomAlert(message) {
             const modal = document.createElement('div');
-            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:99999;';
-            modal.innerHTML = '<div style="background:linear-gradient(135deg,#1e293b,#0b1120);padding:28px 36px;border-radius:12px;border:1px solid rgba(59,130,246,0.3);box-shadow:0 0 50px rgba(0,210,255,0.25);max-width:320px;text-align:center;"><p style="color:#fff;font-size:0.95rem;margin-bottom:24px;line-height:1.6;">' + message + '</p><button onclick="this.closest(\'div\').parentElement.remove()" style="background:linear-gradient(90deg,#3b82f6,#00d2ff);color:#000;border:none;padding:12px 32px;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.9rem;">确定</button></div>';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 99999;
+            `;
+            modal.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #1e293b, #0b1120);
+                    padding: 28px 36px;
+                    border-radius: 12px;
+                    border: 1px solid rgba(59, 130, 246, 0.3);
+                    box-shadow: 0 0 50px rgba(0, 210, 255, 0.25);
+                    max-width: 320px;
+                    text-align: center;
+                ">
+                    <p style="color: #fff; font-size: 0.95rem; margin-bottom: 24px; line-height: 1.6;">${message}</p>
+                    <button onclick="this.closest('div').parentElement.remove()" style="
+                        background: linear-gradient(90deg, #3b82f6, #00d2ff);
+                        color: #000;
+                        border: none;
+                        padding: 12px 32px;
+                        border-radius: 6px;
+                        font-weight: 700;
+                        cursor: pointer;
+                        font-size: 0.9rem;
+                    ">确定</button>
+                </div>
+            `;
             document.body.appendChild(modal);
-            modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) modal.remove();
+            });
         }
-        window.addEventListener('hashchange', function() { if (window.location.hash === '#apply') { openModal(); } });
+
+        // 监听hash变化
+        window.addEventListener('hashchange', function() {
+            if (window.location.hash === '#apply') {
+                openModal();
+            }
+        });
     </script>
+
 </body>
 </html>
