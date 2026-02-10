@@ -38,7 +38,6 @@
             max-width: 480px;
             position: relative;
             overflow: hidden;
-            /* 顶部纯白，让logo完美融合 */
             background: linear-gradient(180deg,
                 #ffffff 0%,
                 #ffffff 10%,
@@ -51,7 +50,6 @@
             box-shadow: 0 0 60px rgba(0, 210, 255, 0.15);
         }
 
-        /* 背景特效层 */
         .chart-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0; pointer-events: none; overflow: hidden;
@@ -108,14 +106,11 @@
 
         .content-wrapper { position: relative; z-index: 10; }
 
-        /* Header */
         .header-area {
             padding: 50px 24px 20px 24px;
-            /* 移除深色覆盖，让浅色背景显示 */
             background: transparent;
         }
 
-        /* Logo 核心修改区域 */
         .logo-container {
             display: flex;
             align-items: center;
@@ -125,7 +120,6 @@
         .logo-image {
             height: 55px;
             width: auto;
-            /* 透明背景，让logo自然融合在浅色区域 */
         }
 
         .title-wrapper {
@@ -134,7 +128,6 @@
 
         .main-title {
             font-size: 2.4rem; font-weight: 900; line-height: 1.1; font-style: italic;
-            /* 深蓝色渐变，适合浅色背景 */
             background: linear-gradient(135deg, #1a365d 20%, #2563eb 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
@@ -152,14 +145,9 @@
             display: inline-block; border-bottom: 2px solid #3b82f6; padding-bottom: 4px;
         }
 
-        /* 关注亚洲 - 放大版 */
         .focus-asia {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: var(--tech-cyan);
-            margin: 15px 0;
-            text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
-            letter-spacing: 0.1em;
+            font-size: 2.2rem; font-weight: 900; color: var(--tech-cyan);
+            margin: 15px 0; text-shadow: 0 0 20px rgba(0, 210, 255, 0.5); letter-spacing: 0.1em;
         }
 
         .glass-card {
@@ -236,7 +224,6 @@
         }
         .overview-text strong { color: var(--tech-cyan); }
 
-        /* 招聘会概括 */
         .session-overview {
             font-size: 0.9rem; line-height: 1.7; color: #cbd5e1;
             background: rgba(99, 102, 241, 0.1); padding: 18px 20px;
@@ -258,11 +245,8 @@
         .req-list li::before { content: '>'; color: var(--tech-cyan); position: absolute; left: 0; font-weight: bold; }
 
         .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); }
-
         .contact-info { font-size: 0.8rem; color: var(--text-gray); }
         .contact-info a { color: var(--tech-cyan); text-decoration: none; }
-
-        /* QR Code 双排展示区域 */
         .qr-dual-section {
             display: flex;
             justify-content: center;
@@ -349,7 +333,6 @@
             color: var(--tech-cyan);
         }
 
-        /* 申请表单弹窗 */
         .application-modal {
             display: none;
             position: fixed;
@@ -406,6 +389,7 @@
             justify-content: center;
             transition: all 0.3s ease;
         }
+
         .modal-close:hover {
             background: rgba(239, 68, 68, 0.3);
             border-color: var(--chart-red);
@@ -505,7 +489,6 @@
             min-height: 90px;
         }
 
-        /* PDF 上传区域 */
         .pdf-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.2);
             border-radius: 8px;
@@ -526,207 +509,85 @@
             background: rgba(16, 185, 129, 0.1);
         }
 
-        .pdf-upload-area input[type="file"] {
-            display: none;
-        }
+        .pdf-upload-area input[type="file"] { display: none; }
 
         .upload-icon {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 12px;
-            fill: var(--text-gray);
-            transition: all 0.3s ease;
+            width: 48px; height: 48px; margin: 0 auto 12px;
+            fill: var(--text-gray); transition: all 0.3s ease;
         }
 
-        .pdf-upload-area:hover .upload-icon {
-            fill: var(--tech-cyan);
-        }
+        .pdf-upload-area:hover .upload-icon { fill: var(--tech-cyan); }
+        .pdf-upload-area.has-file .upload-icon { fill: var(--chart-green); }
 
-        .pdf-upload-area.has-file .upload-icon {
-            fill: var(--chart-green);
-        }
-
-        .upload-text {
-            font-size: 0.9rem;
-            color: var(--text-gray);
-            margin-bottom: 4px;
-        }
-
-        .upload-hint {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.4);
-        }
+        .upload-text { font-size: 0.9rem; color: var(--text-gray); margin-bottom: 4px; }
+        .upload-hint { font-size: 0.75rem; color: rgba(255, 255, 255, 0.4); }
 
         .file-name {
-            font-size: 0.85rem;
-            color: var(--chart-green);
-            margin-top: 8px;
-            display: none;
-            word-break: break-all;
+            font-size: 0.85rem; color: var(--chart-green);
+            margin-top: 8px; display: none; word-break: break-all;
         }
-
-        .pdf-upload-area.has-file .file-name {
-            display: block;
-        }
+        .pdf-upload-area.has-file .file-name { display: block; }
 
         .submit-btn {
-            display: block;
-            width: 100%;
-            padding: 16px;
+            display: block; width: 100%; padding: 16px;
             background: linear-gradient(90deg, var(--tech-blue), var(--tech-cyan));
-            color: #000;
-            font-weight: 700;
-            font-size: 1rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
+            color: #000; font-weight: 700; font-size: 1rem;
+            border: none; border-radius: 8px; cursor: pointer;
+            transition: all 0.3s ease; text-transform: uppercase;
+            letter-spacing: 1px; position: relative; overflow: hidden;
         }
-
-        .submit-btn:hover {
-            filter: brightness(1.1);
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
-        }
-
-        .submit-btn:active {
-            transform: scale(0.98);
-        }
-
+        .submit-btn:hover { filter: brightness(1.1); box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
+        .submit-btn:active { transform: scale(0.98); }
         .submit-btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
             animation: shine 3s infinite;
         }
-
         @keyframes shine { 100% { left: 100%; } }
 
-        /* 成功提交后的显示 */
-        .success-view {
-            display: none;
-            text-align: center;
-            padding: 30px 0;
-        }
-
-        .success-view.show {
-            display: block;
-        }
+        .success-view { display: none; text-align: center; padding: 30px 0; }
+        .success-view.show { display: block; }
 
         .success-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
+            width: 80px; height: 80px; margin: 0 auto 20px;
             background: linear-gradient(135deg, var(--chart-green), #34d399);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: scaleIn 0.5s ease;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; animation: scaleIn 0.5s ease;
         }
+        @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+        .success-icon svg { width: 40px; height: 40px; fill: #fff; }
 
-        @keyframes scaleIn {
-            from { transform: scale(0); }
-            to { transform: scale(1); }
-        }
-
-        .success-icon svg {
-            width: 40px;
-            height: 40px;
-            fill: #fff;
-        }
-
-        .success-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .success-message {
-            font-size: 0.9rem;
-            color: var(--text-gray);
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
+        .success-title { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .success-message { font-size: 0.9rem; color: var(--text-gray); line-height: 1.6; margin-bottom: 24px; }
 
         .applicant-summary {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 10px;
-            padding: 20px;
-            text-align: left;
-            margin-bottom: 24px;
+            background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px; padding: 20px; text-align: left; margin-bottom: 24px;
         }
-
-        .summary-title {
-            font-size: 0.85rem;
-            color: var(--tech-cyan);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .summary-item {
-            display: flex;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-
-        .summary-label {
-            color: var(--text-gray);
-            min-width: 80px;
-        }
-
-        .summary-value {
-            color: #fff;
-            flex: 1;
-        }
+        .summary-title { font-size: 0.85rem; color: var(--tech-cyan); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .summary-item { display: flex; margin-bottom: 10px; font-size: 0.9rem; }
+        .summary-label { color: var(--text-gray); min-width: 80px; }
+        .summary-value { color: #fff; flex: 1; }
 
         .close-modal-btn {
-            padding: 12px 32px;
-            background: transparent;
-            border: 1px solid var(--tech-cyan);
-            color: var(--tech-cyan);
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 12px 32px; background: transparent;
+            border: 1px solid var(--tech-cyan); color: var(--tech-cyan);
+            font-size: 0.9rem; font-weight: 600; border-radius: 6px;
+            cursor: pointer; transition: all 0.3s ease;
         }
+        .close-modal-btn:hover { background: rgba(0, 210, 255, 0.15); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
 
-        .close-modal-btn:hover {
-            background: rgba(0, 210, 255, 0.15);
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
-        }
-
-        /* 响应式调整 */
         @media (max-width: 500px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-content {
-                margin: 10px;
-                padding: 24px 16px;
-            }
+            .form-grid { grid-template-columns: 1fr; }
+            .modal-content { margin: 10px; padding: 24px 16px; }
         }
 
     </style>
-    <!-- QR Code 生成库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
     <div class="poster">
-        <!-- 背景层 -->
         <div class="chart-bg">
             <div class="noise-overlay"></div>
             <div class="tech-ring"></div>
@@ -745,24 +606,17 @@
         </div>
 
         <div class="content-wrapper">
-            <!-- Header -->
             <div class="header-area">
-
-                <!-- Logo 区域 - 使用图片（白底融合） -->
                 <div class="logo-container">
                     <img src="https://pfst.cf2.poecdn.net/base/image/411102607f77dee72e3c3fb88232d509a8ed03b21cf0f78edd331d35cd3a4814?w=388&h=94" alt="Dymon Asia" class="logo-image">
                 </div>
-
-                <!-- 标题区域 -->
                 <div class="title-wrapper">
                     <h1 class="main-title">AI 实习生</h1>
                     <div class="title-chart-bg"></div>
                 </div>
-
                 <div class="sub-title">基本面股票团队 (Fundamental Equities)</div>
             </div>
 
-            <!-- Glass Card -->
             <div class="glass-card">
                 <div class="company-desc">
                     <span class="company-desc-title">关于我们</span>
@@ -777,10 +631,8 @@
                         <div class="stat-num">390+</div>
                         <div class="stat-label">全球精英人才</div>
                     </div>
-                                    </div>
+                </div>
             </div>
-
-            <!-- 详情内容 -->
             <div class="details-container">
                 <div class="event-card">
                     <div class="event-badge">LIVE</div>
@@ -800,6 +652,7 @@
                         Dymon Asia 基本面股票团队诚聘 AI 实习生。项目为期 <strong>6个月</strong>（2026年6月下旬起），前3个月于<strong>香港或上海</strong>实地全职工作。实习生进入公司后将接受<strong>专门培训</strong>，随后分配到基本面股票团队。实习生将利用 AI 技术赋能投资研究，表现优异者将有机会获得 <strong>全职留用</strong>。
                     </div>
                 </div>
+
                 <div class="section-box">
                     <div class="section-header">
                         <div class="section-title">主要职责</div>
@@ -840,9 +693,7 @@
                     </ul>
                 </div>
 
-                <!-- QR Code 展示区域 - 两个并排 -->
                 <div class="qr-dual-section">
-                    <!-- 左边：线上招聘会报名 -->
                     <div class="qr-item">
                         <div class="qr-display-title">线上招聘会报名</div>
                         <div class="qr-display-container" id="qrTrigger">
@@ -850,8 +701,6 @@
                         </div>
                         <div class="qr-scan-hint">扫码报名</div>
                     </div>
-
-                    <!-- 右边：实习申请（预留空位） -->
                     <div class="qr-item">
                         <div class="qr-display-title">实习申请</div>
                         <div class="qr-placeholder">
@@ -870,19 +719,15 @@
         </div>
     </div>
 
-    <!-- 申请表单弹窗 -->
     <div class="application-modal" id="applicationModal">
         <div class="modal-content">
             <button class="modal-close" id="closeModal">&times;</button>
-
             <div class="modal-header">
                 <h2>线上招聘会报名</h2>
                 <p>Dymon Asia Capital - AI 实习生招聘会</p>
             </div>
 
-            <!-- 表单视图 - 使用 FormSubmit 自动发送邮件 -->
-            <form id="applicationForm" action="https://formsubmit.co/janicewcyy@gmail.com" method="POST">
-                <!-- FormSubmit 配置 -->
+            <form id="applicationForm" action="https://formsubmit.co/intern2026@dymonasia.com" method="POST">
                 <input type="hidden" name="_subject" value="线上招聘会报名">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_template" value="table">
@@ -892,36 +737,31 @@
                         <label>姓名 <span class="required">*</span></label>
                         <input type="text" name="姓名" id="name" placeholder="请输入您的姓名" required>
                     </div>
-
                     <div class="form-group full-width">
                         <label>邮箱 <span class="required">*</span></label>
                         <input type="email" name="邮箱" id="email" placeholder="your@email.com" required>
                     </div>
-
                     <div class="form-group full-width">
                         <label>学校 <span class="required">*</span></label>
                         <input type="text" name="学校" id="school" placeholder="请输入您的学校" required>
                     </div>
-
                     <div class="form-group full-width">
                         <label>从什么途径知道的实习项目 <span class="required">*</span></label>
                         <select name="信息来源" id="source" required>
-    <option value="">请选择</option>
-    <option value="学校招聘会/就业中心">学校招聘会/就业中心</option>
-    <option value="LLMQuant微信公众号">LLMQuant微信公众号</option>
-    <option value="LLMQuant小红书">LLMQuant小红书</option>
-    <option value="朋友/校友推荐">朋友/校友推荐</option>
-    <option value="Dymon官网">Dymon官网</option>
-    <option value="Dymon官方微信公众号">Dymon官方微信公众号</option>
-    <option value="其他">其他</option>
-</select>
+                            <option value="">请选择</option>
+                            <option value="学校招聘会/就业中心">学校招聘会/就业中心</option>
+                            <option value="LLMQuant微信公众号">LLMQuant微信公众号</option>
+                            <option value="LLMQuant小红书">LLMQuant小红书</option>
+                            <option value="朋友/校友推荐">朋友/校友推荐</option>
+                            <option value="Dymon官网">Dymon官网</option>
+                            <option value="Dymon官方微信公众号">Dymon官方微信公众号</option>
+                            <option value="其他">其他</option>
+                        </select>
                     </div>
                 </div>
-
                 <button type="submit" class="submit-btn">提交报名</button>
             </form>
 
-            <!-- 成功视图 -->
             <div class="success-view" id="successView">
                 <div class="success-icon">
                     <svg viewBox="0 0 24 24">
@@ -933,47 +773,29 @@
                     感谢您的报名，我们已成功收到您的信息。<br>
                     我们将会以邮件确认招聘会详情。
                 </div>
-
                 <div class="applicant-summary">
                     <div class="summary-title">报名信息摘要</div>
                     <div id="summaryContent"></div>
                 </div>
-
                 <button class="close-modal-btn" id="closeSuccessBtn">关闭</button>
             </div>
         </div>
     </div>
 
     <script>
-        // 生成海报上的QR码
         document.addEventListener('DOMContentLoaded', function() {
-            // GitHub Pages 链接 - 扫码后打开报名表单
             const publicUrl = 'https://janicewcyy-hub.github.io/dymon-apply/#apply';
-
             new QRCode(document.getElementById('posterQRCode'), {
-                text: publicUrl,
-                width: 110,
-                height: 110,
-                colorDark: '#0b1120',
-                colorLight: '#ffffff',
+                text: publicUrl, width: 110, height: 110,
+                colorDark: '#0b1120', colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.M
             });
-
-            // 检查URL是否有#apply，如果有则自动打开弹窗
-            if (window.location.hash === '#apply') {
-                openModal();
-            }
+            if (window.location.hash === '#apply') { openModal(); }
         });
 
-        // 点击QR码打开弹窗
-        document.getElementById('qrTrigger').addEventListener('click', function() {
-            openModal();
-        });
-
-        // 关闭弹窗
+        document.getElementById('qrTrigger').addEventListener('click', function() { openModal(); });
         document.getElementById('closeModal').addEventListener('click', closeModal);
         document.getElementById('closeSuccessBtn').addEventListener('click', closeModal);
-
         document.getElementById('applicationModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
@@ -986,153 +808,78 @@
         function closeModal() {
             document.getElementById('applicationModal').classList.remove('show');
             document.body.style.overflow = '';
-            // 重置表单和视图
             document.getElementById('applicationForm').style.display = 'block';
             document.getElementById('successView').classList.remove('show');
             document.getElementById('applicationForm').reset();
-            // 移除URL hash
             history.pushState('', document.title, window.location.pathname + window.location.search);
         }
 
-        // 表单提交 - 使用 FormSubmit 自动发送邮件
         document.getElementById('applicationForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
-            // 收集表单数据
             const formData = {
                 name: document.getElementById('name').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 school: document.getElementById('school').value.trim(),
                 source: document.getElementById('source').value
             };
-
-            // 验证必填字段
             if (!formData.name || !formData.email || !formData.school) {
-                showCustomAlert('请填写所有必填字段（标有 * 的字段）');
-                return;
+                showCustomAlert('请填写所有必填字段（标有 * 的字段）'); return;
             }
-
             if (!formData.source) {
-                showCustomAlert('请选择从什么途径知道的实习项目');
-                return;
+                showCustomAlert('请选择从什么途径知道的实习项目'); return;
             }
-
-            // 发送到 FormSubmit
             submitToFormSubmit(formData);
         });
 
-        // 使用 FormSubmit 发送邮件
         function submitToFormSubmit(data) {
             const submitBtn = document.querySelector('.submit-btn');
             submitBtn.textContent = '提交中...';
             submitBtn.disabled = true;
-
-            fetch('https://formsubmit.co/ajax/janicewcyy@gmail.com', {
+            fetch('https://formsubmit.co/ajax/intern2026@dymonasia.com', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify({
-                    姓名: data.name,
-                    邮箱: data.email,
-                    学校: data.school,
-                    信息来源: data.source,
+                    姓名: data.name, 邮箱: data.email,
+                    学校: data.school, 信息来源: data.source,
                     _subject: '线上招聘会报名 - ' + data.name
                 })
             })
             .then(response => response.json())
             .then(result => {
-                submitBtn.textContent = '提交报名';
-                submitBtn.disabled = false;
+                submitBtn.textContent = '提交报名'; submitBtn.disabled = false;
                 showSuccessView(data);
             })
             .catch(error => {
-                submitBtn.textContent = '提交报名';
-                submitBtn.disabled = false;
+                submitBtn.textContent = '提交报名'; submitBtn.disabled = false;
                 showCustomAlert('提交失败，请稍后重试');
             });
         }
 
         function showSuccessView(data) {
-            // 隐藏表单
             document.getElementById('applicationForm').style.display = 'none';
-
-            // 显示成功视图
             const successView = document.getElementById('successView');
             successView.classList.add('show');
-
-            // 填充摘要信息
-            const summaryContent = document.getElementById('summaryContent');
-            summaryContent.innerHTML = `
-                <div class="summary-item">
-                    <span class="summary-label">姓名:</span>
-                    <span class="summary-value">${data.name}</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">邮箱:</span>
-                    <span class="summary-value">${data.email}</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">学校:</span>
-                    <span class="summary-value">${data.school}</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">信息来源:</span>
-                    <span class="summary-value">${data.source}</span>
-                </div>
+            document.getElementById('summaryContent').innerHTML = `
+                <div class="summary-item"><span class="summary-label">姓名:</span><span class="summary-value">${data.name}</span></div>
+                <div class="summary-item"><span class="summary-label">邮箱:</span><span class="summary-value">${data.email}</span></div>
+                <div class="summary-item"><span class="summary-label">学校:</span><span class="summary-value">${data.school}</span></div>
+                <div class="summary-item"><span class="summary-label">信息来源:</span><span class="summary-value">${data.source}</span></div>
             `;
         }
 
-        // 自定义弹窗
         function showCustomAlert(message) {
             const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.8);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 99999;
-            `;
-            modal.innerHTML = `
-                <div style="
-                    background: linear-gradient(135deg, #1e293b, #0b1120);
-                    padding: 28px 36px;
-                    border-radius: 12px;
-                    border: 1px solid rgba(59, 130, 246, 0.3);
-                    box-shadow: 0 0 50px rgba(0, 210, 255, 0.25);
-                    max-width: 320px;
-                    text-align: center;
-                ">
-                    <p style="color: #fff; font-size: 0.95rem; margin-bottom: 24px; line-height: 1.6;">${message}</p>
-                    <button onclick="this.closest('div').parentElement.remove()" style="
-                        background: linear-gradient(90deg, #3b82f6, #00d2ff);
-                        color: #000;
-                        border: none;
-                        padding: 12px 32px;
-                        border-radius: 6px;
-                        font-weight: 700;
-                        cursor: pointer;
-                        font-size: 0.9rem;
-                    ">确定</button>
-                </div>
-            `;
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:99999;';
+            modal.innerHTML = `<div style="background:linear-gradient(135deg,#1e293b,#0b1120);padding:28px 36px;border-radius:12px;border:1px solid rgba(59,130,246,0.3);box-shadow:0 0 50px rgba(0,210,255,0.25);max-width:320px;text-align:center;">
+                <p style="color:#fff;font-size:0.95rem;margin-bottom:24px;line-height:1.6;">${message}</p>
+                <button onclick="this.closest('div').parentElement.remove()" style="background:linear-gradient(90deg,#3b82f6,#00d2ff);color:#000;border:none;padding:12px 32px;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.9rem;">确定</button>
+            </div>`;
             document.body.appendChild(modal);
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) modal.remove();
-            });
+            modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
         }
 
-        // 监听hash变化
         window.addEventListener('hashchange', function() {
-            if (window.location.hash === '#apply') {
-                openModal();
-            }
+            if (window.location.hash === '#apply') { openModal(); }
         });
     </script>
 
